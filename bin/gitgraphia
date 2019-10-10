@@ -7,15 +7,20 @@ require 'gitgraphia'
 
 git_sha = 'HEAD'
 
-gitgraphia = Gitgraphia.new
+reader = Gitgraphia::Reader.new
+inspector = Gitgraphia::Inspector.new
 
-gitgraphia.parents_of(git_sha).each do |parent_sha|
-  puts "commit #{git_sha} -[:has_parent]-> commit #{parent_sha}"
-end
+inspector.find_branch_ancestry(git_sha).each do |commit_sha|
+  puts '----' * 30
 
-tree_sha = gitgraphia.tree_of(git_sha)
-puts "commit #{git_sha} -[:represents]-> tree #{tree_sha}"
+  reader.parents_of(commit_sha).each do |parent_sha|
+    puts "commit #{commit_sha} -[:has_parent]-> commit #{parent_sha}"
+  end
 
-gitgraphia.tree_to_files(tree_sha).each do |file|
-  puts "tree #{tree_sha} -[:contains]-> #{file}"
+  tree_sha = reader.tree_of(commit_sha)
+  puts "commit #{commit_sha} -[:represents]-> tree #{tree_sha}"
+
+  reader.tree_to_files(tree_sha).each do |file|
+    puts "tree #{tree_sha} -[:contains]-> #{file}"
+  end
 end

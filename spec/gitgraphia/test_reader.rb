@@ -2,19 +2,19 @@
 
 require 'minitest/autorun'
 require 'minitest/spec'
-require 'gitgraphia'
+require 'gitgraphia/reader'
 
-describe Gitgraphia do
+describe Gitgraphia::Reader do
   # These are real commit SHAs on this repository from the `master` branch.
   # Using real hashes is unconventional, but git is immutable and I don't have to mock `git cat-file` this way.
   let(:root_commit_sha) { 'ab1527fbb47bbf110133a27f3a9043ba3a963062' }
   let(:child_of_root_commit_sha) { 'd102418484007c2ca572860977a0ac3327a5d7c8' }
   let(:merge_commit_sha) { '8dcc4e8f9da54ef5e8692642da2de15e5e78f233' }
 
-  let(:gitgraphia) { Gitgraphia.new }
+  let(:reader) { Gitgraphia::Reader.new }
 
   describe '#parents_of' do
-    let(:parent_shas) { gitgraphia.parents_of(sha) }
+    let(:parent_shas) { reader.parents_of(sha) }
 
     describe 'the root commit' do
       let(:sha) { root_commit_sha }
@@ -42,7 +42,7 @@ describe Gitgraphia do
   end
 
   describe '#tree_of' do
-    let(:tree_sha) { gitgraphia.tree_of(sha) }
+    let(:tree_sha) { reader.tree_of(sha) }
 
     describe 'a commit' do
       let(:sha) { root_commit_sha }
@@ -55,7 +55,7 @@ describe Gitgraphia do
 
   describe '#tree_to_files' do
     let(:tree_sha) { "#{child_of_root_commit_sha}^{tree}" }
-    let(:files) { gitgraphia.tree_to_files(tree_sha) }
+    let(:files) { reader.tree_to_files(tree_sha) }
 
     describe 'a tree' do
       it 'always has a list of files' do
@@ -68,7 +68,7 @@ describe Gitgraphia do
   end
 
   describe 'object_of' do
-    let(:object_lines) { gitgraphia.object_of(sha) }
+    let(:object_lines) { reader.object_of(sha) }
 
     describe 'the root commit' do
       let(:sha) { root_commit_sha }
