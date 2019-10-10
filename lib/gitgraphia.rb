@@ -4,3 +4,4 @@ module Gitgraphia
 end
 
 require_relative './gitgraphia/reader'
+require_relative './gitgraphia/inspector'
