@@ -9,6 +9,7 @@ describe Gitgraphia do
   # Using real hashes is unconventional, but git is immutable and I don't have to mock `git cat-file` this way.
   let(:root_commit_sha) { 'ab1527fbb47bbf110133a27f3a9043ba3a963062' }
   let(:child_of_root_commit_sha) { 'd102418484007c2ca572860977a0ac3327a5d7c8' }
+  let(:merge_commit_sha) { '8dcc4e8f9da54ef5e8692642da2de15e5e78f233' }
 
   let(:gitgraphia) { Gitgraphia.new }
 
@@ -28,6 +29,14 @@ describe Gitgraphia do
 
       it 'has a single parent' do
         _(parent_shas).must_equal [root_commit_sha]
+      end
+    end
+
+    describe 'a merge commit' do
+      let(:sha) { merge_commit_sha }
+
+      it 'has multiple parents' do
+        _(parent_shas).must_equal [child_of_root_commit_sha, '88959131fdc5d4716aaf56b502f8d4258c630e47']
       end
     end
   end
@@ -83,6 +92,19 @@ describe Gitgraphia do
 
       it 'refers to a parent' do
         _(object_lines).must_include "parent #{root_commit_sha}"
+      end
+    end
+
+    describe 'a merge commit' do
+      let(:sha) { merge_commit_sha }
+
+      it 'refers to a tree' do
+        _(object_lines).must_include 'tree 628fb4077df65941d29a10e5701c48d4c2bfc840'
+      end
+
+      it 'refers to multiple parents' do
+        _(object_lines).must_include "parent #{child_of_root_commit_sha}"
+        _(object_lines).must_include 'parent 88959131fdc5d4716aaf56b502f8d4258c630e47'
       end
     end
   end
