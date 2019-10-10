@@ -1,0 +1,17 @@
+name: tests
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-18.04
+    container:
+      image: ruby:2.6.5-alpine3.10
+    steps:
+      - run: apk add --no-cache git
+      - uses: actions/checkout@master
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+      - name: Run tests
+        run: bundle exec rake
