@@ -66,46 +66,4 @@ describe Gitgraphia::Reader do
       end
     end
   end
-
-  describe 'object_of' do
-    let(:object_lines) { reader.object_of(sha) }
-
-    describe 'the root commit' do
-      let(:sha) { root_commit_sha }
-
-      it 'refers to a tree' do
-        _(object_lines).must_include 'tree 82e3a754b6a0fcb238b03c0e47d05219fbf9cf89'
-      end
-
-      it 'has no parents reference' do
-        _(object_lines.select { |line| line =~ /^parent/ })
-          .must_be_empty("Commit #{sha} must not have a parent object reference")
-      end
-    end
-
-    describe 'a single parent commit' do
-      let(:sha) { child_of_root_commit_sha }
-
-      it 'refers to a tree' do
-        _(object_lines).must_include 'tree 48e230d5bb3080bd3dcb60eaaf3e536f7b531580'
-      end
-
-      it 'refers to a parent' do
-        _(object_lines).must_include "parent #{root_commit_sha}"
-      end
-    end
-
-    describe 'a merge commit' do
-      let(:sha) { merge_commit_sha }
-
-      it 'refers to a tree' do
-        _(object_lines).must_include 'tree 628fb4077df65941d29a10e5701c48d4c2bfc840'
-      end
-
-      it 'refers to multiple parents' do
-        _(object_lines).must_include "parent #{child_of_root_commit_sha}"
-        _(object_lines).must_include 'parent 88959131fdc5d4716aaf56b502f8d4258c630e47'
-      end
-    end
-  end
 end
