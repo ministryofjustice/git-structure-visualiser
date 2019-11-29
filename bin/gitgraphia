@@ -9,18 +9,19 @@ git_sha = 'HEAD'
 
 reader = Gitgraphia::Reader.new
 inspector = Gitgraphia::Inspector.new
+formatter = Gitgraphia::CypherFormatter.new
 
 inspector.find_branch_ancestry(git_sha).each do |commit|
-  puts '----' * 30
-
   reader.parents_of(commit[:sha]).each do |parent_commit|
-    puts "#{commit} -[:has_parent]-> #{parent_commit}"
+    formatter.add_edge(commit, :has_parent, parent_commit)
   end
 
   tree = reader.tree_of(commit[:sha])
-  puts "#{commit} -[:represents]-> #{tree}"
+  formatter.add_edge(commit, :represents, tree)
 
   reader.tree_to_files(tree[:sha]).each do |file|
-    puts "#{tree} -[:contains]-> #{file}"
+    formatter.add_edge(tree, :contains, file)
   end
 end
+
+puts formatter.output
