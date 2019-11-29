@@ -26,9 +26,9 @@ describe Gitgraphia::Inspector do
       #  * ab1527f Initial commit                                              -- root_commit_sha
 
       _(ancestry).must_equal [
-        merge_commit_sha,
-        child_of_root_commit_sha,
-        root_commit_sha
+        { type: 'commit', sha: merge_commit_sha },
+        { type: 'commit', sha: child_of_root_commit_sha },
+        { type: 'commit', sha: root_commit_sha }
       ]
     end
   end

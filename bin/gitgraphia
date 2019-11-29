@@ -10,17 +10,17 @@ git_sha = 'HEAD'
 reader = Gitgraphia::Reader.new
 inspector = Gitgraphia::Inspector.new
 
-inspector.find_branch_ancestry(git_sha).each do |commit_sha|
+inspector.find_branch_ancestry(git_sha).each do |commit|
   puts '----' * 30
 
-  reader.parents_of(commit_sha).each do |parent_sha|
-    puts "commit #{commit_sha} -[:has_parent]-> commit #{parent_sha}"
+  reader.parents_of(commit[:sha]).each do |parent_commit|
+    puts "#{commit} -[:has_parent]-> #{parent_commit}"
   end
 
-  tree_sha = reader.tree_of(commit_sha)&.[](:sha)
-  puts "commit #{commit_sha} -[:represents]-> tree #{tree_sha}"
+  tree = reader.tree_of(commit[:sha])
+  puts "#{commit} -[:represents]-> #{tree}"
 
-  reader.tree_to_files(tree_sha).each do |file|
-    puts "tree #{tree_sha} -[:contains]-> #{file}"
+  reader.tree_to_files(tree[:sha]).each do |file|
+    puts "#{tree} -[:contains]-> #{file}"
   end
 end
