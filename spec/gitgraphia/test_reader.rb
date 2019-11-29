@@ -28,7 +28,7 @@ describe Gitgraphia::Reader do
       let(:sha) { child_of_root_commit_sha }
 
       it 'has a single parent' do
-        _(parent_shas).must_equal [root_commit_sha]
+        _(parent_shas).must_equal [{ type: 'commit', sha: root_commit_sha }]
       end
     end
 
@@ -36,7 +36,8 @@ describe Gitgraphia::Reader do
       let(:sha) { merge_commit_sha }
 
       it 'has multiple parents' do
-        _(parent_shas).must_equal [child_of_root_commit_sha, '88959131fdc5d4716aaf56b502f8d4258c630e47']
+        _(parent_shas).must_equal [{ type: 'commit', sha: child_of_root_commit_sha },
+                                   { type: 'commit', sha: '88959131fdc5d4716aaf56b502f8d4258c630e47' }]
       end
     end
   end
@@ -48,7 +49,7 @@ describe Gitgraphia::Reader do
       let(:sha) { root_commit_sha }
 
       it 'always has a tree hash' do
-        _(tree_sha).must_equal '82e3a754b6a0fcb238b03c0e47d05219fbf9cf89'
+        _(tree_sha).must_equal(type: 'tree', sha: '82e3a754b6a0fcb238b03c0e47d05219fbf9cf89')
       end
     end
   end

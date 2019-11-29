@@ -5,14 +5,14 @@ module Gitgraphia
     def tree_of(git_sha)
       object_of(git_sha)
         .select { |line| line =~ /^tree/ }
-        .map { |line| line.gsub(/^tree /, '') }
+        .map { |line| { type: 'tree', sha: line.gsub(/^tree /, '') } }
         .first
     end
 
     def parents_of(git_sha)
       object_of(git_sha)
         .select { |line| line =~ /^parent/ }
-        .map { |line| line.gsub(/^parent /, '') }
+        .map { |line| { type: 'commit', sha: line.gsub(/^parent /, '') } }
     end
 
     def tree_to_files(tree_sha)

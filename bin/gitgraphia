@@ -17,7 +17,7 @@ inspector.find_branch_ancestry(git_sha).each do |commit_sha|
     puts "commit #{commit_sha} -[:has_parent]-> commit #{parent_sha}"
   end
 
-  tree_sha = reader.tree_of(commit_sha)
+  tree_sha = reader.tree_of(commit_sha)&.[](:sha)
   puts "commit #{commit_sha} -[:represents]-> tree #{tree_sha}"
 
   reader.tree_to_files(tree_sha).each do |file|

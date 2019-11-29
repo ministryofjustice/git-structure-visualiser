@@ -9,7 +9,7 @@ module Gitgraphia
     def find_branch_ancestry(start_commit_sha)
       return [] unless start_commit_sha
 
-      branch_parent_sha = reader.parents_of(start_commit_sha).first
+      branch_parent_sha = reader.parents_of(start_commit_sha).first&.[](:sha)
       ancestry = find_branch_ancestry(branch_parent_sha)
 
       [start_commit_sha].concat(ancestry)
